@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBK Leave Projection Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --teal: #c07a5a;
+  --teal-light: #d4927a;
+  --teal-pale: #fdf4ef;
+  --teal-mid: #f5ddd3;
+  --gold: #d4a96a;
+  --coral: #b85c52;
+  --navy: #4a3728;
+  --slate: #8a7268;
+  --mist: #fef9f6;
+  --white: #ffffff;
+  --border: #ecddd6;
+  --text: #3a2a20;
+  --text-light: #9a8075;
+  --shadow: 0 2px 16px rgba(192,122,90,0.08);
+  --shadow-lg: 0 8px 40px rgba(192,122,90,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--mist);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ====== LOGIN SCREEN ====== */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(150deg, #5c3d2e 0%, #c07a5a 55%, #d4a96a 100%);
+  position: relative;
+}
+#loginScreen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.login-card {
+  background: #fffaf7;
+  border-radius: 24px;
+  padding: 52px 48px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.login-logo-icon {
+  width: 48px; height: 48px;
+  background: var(--teal);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.login-logo-text h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: var(--teal);
+  line-height: 1;
+}
+.login-logo-text p {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--mist);
+  transition: all 0.2s;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--teal);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(26,122,110,0.12);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--teal);
+  color: white;
+  width: 100%;
+}
+.btn-primary:hover { background: var(--navy); transform: translateY(-1px); box-shadow: var(--shadow); }
+
+.btn-secondary {
+  background: var(--teal-pale);
+  color: var(--teal);
+}
+.btn-secondary:hover { background: var(--teal-mid); }
+
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+.btn-danger { background: #fdf0ef; color: var(--coral); }
+.btn-danger:hover { background: #faded; }
+.btn-gold { background: var(--gold); color: var(--navy); }
+.btn-gold:hover { background: #d4b05a; }
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 24px 0;
+  color: var(--text-light);
+  font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.admin-link {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-light);
+}
+.admin-link a { color: var(--teal); text-decoration: none; font-weight: 600; }
+.admin-link a:hover { text-decoration: underline; }
+
+.error-msg {
+  background: #fff0ee;
+  border: 1px solid #f5c6bb;
+  color: var(--coral);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* ====== MAIN APP ====== */
+#app { display: none; min-height: 100vh; flex-direction: column; }
+#app.active { display: flex; }
+
+.topbar {
+  background: var(--navy);
+  color: white;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(74,55,40,0.18);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: white;
+}
+.topbar-logo span { color: var(--gold); }
+.topbar-user {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 14px;
+}
+.topbar-user .user-badge {
+  background: rgba(255,255,255,0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.topbar-user .user-name { color: var(--gold); font-weight: 600; }
+
+.nav-tabs {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 32px;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-tab {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-tab:hover { color: var(--teal); }
+.nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+.main-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ====== CARDS ====== */
+.card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--navy);
+}
+.card-subtitle {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* ====== CALENDAR ====== */
+.cal-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.cal-month-label {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--navy);
+}
+.cal-nav-btn {
+  background: var(--teal-pale);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--teal);
+  transition: all 0.2s;
+}
+.cal-nav-btn:hover { background: var(--teal); color: white; }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 0;
+}
+.cal-cell {
+  border-radius: var(--radius-sm);
+  min-height: 80px;
+  padding: 8px;
+  position: relative;
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+}
+.cal-cell:not(.empty):not(.blocked):not(.off-day):not(.public-holiday) { cursor: pointer; }
+.cal-cell:not(.empty):not(.blocked):not(.off-day):not(.public-holiday):hover {
+  border-color: var(--teal);
+  background: var(--teal-pale);
+}
+.cal-cell.empty { background: transparent; cursor: default; }
+.cal-cell.public-holiday { background: #f5eeff; }
+.cal-cell.sunday { background: #f8f5f3; cursor: default; }
+.cal-cell.saturday { background: #fdf8f2; }
+.cal-cell.off-day { background: #f3eeeb; cursor: default; }
+.cal-cell.blocked { background: #fef0ef; cursor: default; }
+.cal-cell.has-leave-am { border-left: 3px solid var(--teal); }
+.cal-cell.has-leave-pm { border-right: 3px solid var(--coral); }
+.cal-cell.has-leave-full { border-left: 3px solid var(--teal); border-right: 3px solid var(--teal); background: var(--teal-pale); }
+.cal-cell.selected { border-color: var(--teal) !important; background: var(--teal-pale) !important; }
+.cal-cell.multi-selected {
+  border-color: var(--teal) !important;
+  background: var(--teal-mid) !important;
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+.cal-cell.multi-selected .cal-date { color: var(--teal); font-weight: 700; }
+
+.cal-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.cal-cell.sunday .cal-date, .cal-cell.public-holiday .cal-date { color: #c084fc; }
+.cal-cell.today .cal-date {
+  background: var(--teal);
+  color: white;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.cal-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: inline-block;
+}
+.badge-al { background: #dbeafe; color: #1d4ed8; }
+.badge-alp { background: #fde68a; color: #92400e; border: 1px solid #f59e0b; }
+
+.badge-ml { background: #fee2e2; color: #b91c1c; }
+.badge-hl { background: #fca5a5; color: #7f1d1d; }
+.badge-ma { background: #fef9c3; color: #854d0e; }
+.badge-cl { background: #d1fae5; color: #065f46; }
+.badge-npl { background: #fef3c7; color: #92400e; }
+.badge-fl { background: #ede9fe; color: #5b21b6; }
+.badge-pat { background: #bfdbfe; color: #1e40af; }
+.badge-mat { background: #fbcfe8; color: #9d174d; }
+.badge-conf { background: #e0f2fe; color: #0369a1; }
+.badge-cm { background: #ccfbf1; color: #0f766e; }
+.badge-bday { background: #fce7f3; color: #9d174d; }
+.badge-train { background: #ecfdf5; color: #064e3b; }
+
+.cal-label {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+.label-am { background: var(--teal); color: white; }
+.label-pm { background: var(--coral); color: white; }
+.label-full { background: var(--navy); color: white; }
+.label-off { background: #94a3b8; color: white; }
+.label-blocked { background: var(--coral); color: white; }
+.label-ph { background: #a855f7; color: white; }
+.label-special { background: var(--gold); color: var(--navy); }
+
+/* ====== MODAL ====== */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(13,43,62,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fffaf7;
+  border-radius: 20px;
+  padding: 36px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.2s ease;
+  border: 1px solid var(--border);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.modal-date {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+.session-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.session-btn {
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.session-btn:hover { border-color: var(--teal); color: var(--teal); }
+.session-btn.active { border-color: var(--teal); background: var(--teal); color: white; }
+
+.leave-types {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.leave-type-btn {
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.leave-type-btn:hover { border-color: var(--teal); }
+.leave-type-btn.active { border-color: var(--teal); background: var(--teal-pale); font-weight: 600; }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+.modal-actions .btn { flex: 1; }
+
+/* ====== OVERVIEW ====== */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  font-size: 11px;
+}
+.ov-header {
+  text-align: center;
+  font-weight: 700;
+  padding: 6px 2px;
+  color: var(--text-light);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ov-cell {
+  background: white;
+  border-radius: 6px;
+  padding: 6px 4px;
+  min-height: 64px;
+  border: 1px solid var(--border);
+  cursor: default;
+  position: relative;
+}
+.ov-cell.ph { background: #f5eeff; }
+.ov-cell.weekend { background: #f7f4f2; }
+.ov-cell.half-day { background: #fdfaf5; }
+.ov-cell.special-eve { background: #fef9ed; }
+.ov-date { font-weight: 700; font-size: 11px; color: var(--text); margin-bottom: 3px; }
+.ov-session {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+.ov-session.am { background: #fdf3eb; }
+.ov-session.pm { background: #fef0ef; }
+.ov-session span { font-size: 10px; font-weight: 600; }
+.ov-count { font-size: 11px; font-weight: 700; }
+.ov-count.zero { color: #bbb; }
+.ov-count.danger { color: var(--coral); }
+.ov-count.warn { color: #d97706; }
+.ov-count.ok { color: var(--teal); }
+.ov-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%; left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 10;
+  margin-bottom: 4px;
+  max-width: 200px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.5;
+}
+.ov-cell:hover .ov-tooltip { display: block; }
+
+/* ====== STATS ====== */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: linear-gradient(135deg, #ffffff 0%, var(--teal-pale) 100%);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.stat-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  color: var(--teal);
+  line-height: 1;
+}
+.stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; font-weight: 500; }
+
+/* ====== ADMIN ====== */
+.admin-section { margin-bottom: 32px; }
+.admin-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.staff-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--mist);
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.staff-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.staff-table tr:hover td { background: var(--mist); }
+
+.tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 2px;
+}
+.tag-fulltime { background: var(--teal-pale); color: var(--teal); }
+.tag-parttime { background: #fef3c7; color: #92400e; }
+.tag-id { background: var(--mist); color: var(--slate); font-family: monospace; font-size: 12px; padding: 4px 10px; border-radius: 6px; }
+
+/* ====== AUDIT LOG ====== */
+.audit-entry {
+  border-left: 3px solid var(--teal-mid);
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px;
+}
+.audit-entry.type-add { border-left-color: var(--teal); }
+.audit-entry.type-amend { border-left-color: var(--gold); }
+.audit-entry.type-delete { border-left-color: var(--coral); }
+.audit-meta { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+/* ====== RESPONSIVE ====== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+@media (max-width: 900px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .main-content { padding: 16px; }
+  .topbar { padding: 0 16px; }
+  .nav-tabs { padding: 0 16px; }
+  .cal-cell { min-height: 60px; }
+}
+
+.notice-banner {
+  background: linear-gradient(90deg, var(--teal-pale), var(--mist));
+  border: 1px solid var(--teal-mid);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--teal);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.chip-teal { background: var(--teal-pale); color: var(--teal); }
+.chip-coral { background: #fdecea; color: var(--coral); }
+.chip-navy { background: #f0e8e2; color: var(--navy); }
+
+.month-section { margin-bottom: 48px; }
+.month-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: var(--navy);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--teal-mid);
+}
+
+.leave-pill {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 2px;
+  gap: 4px;
+}
+
+.hidden { display: none !important; }
+
+.input-row { display: flex; gap: 8px; align-items: flex-end; }
+.input-row .form-group { flex: 1; margin-bottom: 0; }
+
+.section-gap { margin-top: 28px; }
+
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.checkbox-item { 
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+}
+.checkbox-item:hover { border-color: var(--teal); }
+.checkbox-item input[type=checkbox] { cursor: pointer; accent-color: var(--teal); }
+.checkbox-item.checked { border-color: var(--teal); background: var(--teal-pale); }
+
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  resize: vertical;
+  min-height: 80px;
+  background: var(--mist);
+  outline: none;
+  transition: all 0.2s;
+}
+textarea:focus {
+  border-color: var(--teal);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(26,122,110,0.12);
+}
+</style>
+</head>
+<body>
+
+<!-- ====== LOGIN SCREEN ====== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">🏥</div>
+      <div class="login-logo-text">
+        <h1>BBK Leave Projection</h1>
+        <p>BBK Polyclinic Leave Projection Portal</p>
+      </div>
+    </div>
+    <p style="font-size:15px;font-weight:500;color:var(--teal);margin-bottom:6px;line-height:1.5;">Welcome to the BBK Leave Projection Portal for July 2026 to December 2026.</p>
+    <p style="font-size:13px;color:var(--coral);font-weight:600;margin-bottom:12px;line-height:1.5;">Please note that this is for projection purposes and your leaves are NOT confirmed yet.</p>
+    <p class="login-subtitle">Enter your unique staff ID code to access your personal leave calendar. If you don't have a code, contact your admin.</p>
+    <div class="error-msg" id="loginError">Invalid ID code. Please try again or contact admin.</div>
+    <div class="form-group">
+      <label>Your Staff ID Code</label>
+      <input type="text" id="loginId" placeholder="e.g. SG-2026-XXXXX" autocomplete="off" />
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">🔐 Access My Calendar</button>
+    <div class="divider">or</div>
+    <div class="admin-link"><a href="#" onclick="showAdminLogin()">Admin Login →</a></div>
+    <div id="adminLoginForm" class="hidden" style="margin-top:20px;">
+      <div class="form-group">
+        <label>Admin Password</label>
+        <input type="password" id="adminPw" placeholder="Enter admin password" />
+      </div>
+      <button class="btn btn-primary" onclick="doAdminLogin()">Login as Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MAIN APP ====== -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">BBK <span>Leave Projection</span></div>
+    <div class="topbar-user">
+      <span class="user-badge">🏥 Polyclinic</span>
+      <span class="user-name" id="topbarName"></span>
+      <button class="btn btn-sm btn-secondary" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs" id="navTabs">
+    <div class="nav-tab active" data-tab="myLeave" onclick="switchTab('myLeave')">📅 My Leave Projection</div>
+    <div class="nav-tab" id="navTabOverview" data-tab="overview" onclick="switchTab('overview')">👥 Team Overview</div>
+    <div class="nav-tab hidden" id="navTabAdmin" data-tab="admin" onclick="switchTab('admin')">⚙️ Admin</div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- MY LEAVE TAB -->
+    <div id="tabMyLeave">
+      <div id="welcomeMessage" style="font-size:20px;font-weight:600;color:var(--teal);padding:8px 0 4px 0;"></div>
+      <div class="notice-banner" id="myIdBanner">
+        🔑 Your ID: <strong id="myIdDisplay"></strong> — save this to access your calendar anytime.
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total Leave Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statAL">0</div>
+          <div class="stat-label">Annual Leave</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statML">0</div>
+          <div class="stat-label">Medical Leave</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statOther">0</div>
+          <div class="stat-label">Other Leave</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="changeMyMonth(-1)">&#8592;</button>
+          <div class="cal-month-label" id="myCalMonthLabel"></div>
+          <button class="cal-nav-btn" onclick="changeMyMonth(1)">&#8594;</button>
+        </div>
+        <div class="notice-banner" style="margin-bottom:12px;font-size:12px;">
+          💡 <strong>Tap dates</strong> to select them, then click <strong>Apply for Selected</strong>. Tap again to deselect.
+        </div>
+        <div id="multiSelectBar" style="display:none;margin-bottom:12px;padding:10px 14px;background:var(--navy);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <span style="color:white;font-size:13px;font-weight:600;" id="multiSelectCount">0 dates selected</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-secondary" onclick="clearMultiSelect()">Clear</button>
+            <button class="btn btn-sm btn-gold" onclick="openMultiLeaveModal()">✓ Apply for Selected</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="myCalGrid">
+          <div class="cal-day-header">Sun</div>
+          <div class="cal-day-header">Mon</div>
+          <div class="cal-day-header">Tue</div>
+          <div class="cal-day-header">Wed</div>
+          <div class="cal-day-header">Thu</div>
+          <div class="cal-day-header">Fri</div>
+          <div class="cal-day-header">Sat</div>
+        </div>
+        <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; font-size:12px;">
+          <span><span class="cal-label label-am">AM</span> Morning session leave</span>
+          <span><span class="cal-label label-pm">PM</span> Afternoon session leave</span>
+          <span><span class="cal-label label-full">FULL</span> Full day leave</span>
+          <span><span class="cal-label label-off">OFF</span> Your off day</span>
+          <span><span class="cal-label label-blocked">BLOCK</span> Blacked out</span>
+          <span><span class="cal-label label-ph">PH</span> Public holiday</span>
+          <span><span class="cal-label label-special">EVE</span> Half day (AM only)</span>
+        </div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="card-header">
+          <div>
+            <div class="card-title">My Leave Records</div>
+            <div class="card-subtitle">Jul – Dec 2026</div>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="openRangeModal()">+ Apply Date Range</button>
+        </div>
+        <table class="staff-table" id="myLeaveTable">
+          <thead><tr>
+            <th>Date</th><th>Session</th><th>Leave Type</th><th>Status</th><th>Submitted</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="myLeaveTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="tabOverview" class="hidden">
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Team Leave Overview</div>
+            <div class="card-subtitle">See how many others have projected leave in each day to plan your leave wisely</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-secondary" onclick="changeOvMonth(-1)">&#8592;</button>
+            <span class="cal-month-label" id="ovMonthLabel" style="font-size:18px;align-self:center;"></span>
+            <button class="btn btn-sm btn-secondary" onclick="changeOvMonth(1)">&#8594;</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;font-size:12px;">
+          <span>🟢 Low (≤3 on leave)</span>
+          <span>🟡 Moderate (4-6)</span>
+          <span>🔴 High (7+)</span>
+          <span style="color:var(--teal);font-weight:600;">✦ Your projected leave</span>
+          <span style="opacity:0.6">— counts include AM/PM sessions</span>
+        </div>
+        <div class="cal-grid" id="ovGrid">
+          <div class="ov-header">Sun</div>
+          <div class="ov-header">Mon</div>
+          <div class="ov-header">Tue</div>
+          <div class="ov-header">Wed</div>
+          <div class="ov-header">Thu</div>
+          <div class="ov-header">Fri</div>
+          <div class="ov-header">Sat</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div id="tabAdminContent" class="hidden">
+      <div class="grid-2">
+        <div>
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div class="card-title">Staff Management</div>
+              <button class="btn btn-sm btn-primary" onclick="showAddStaff()">+ Add Staff</button>
+            </div>
+            <div id="addStaffForm" class="hidden" style="margin-bottom:20px;padding:20px;background:var(--mist);border-radius:var(--radius-sm);">
+              <div class="form-group"><label>Full Name</label><input type="text" id="newName" placeholder="e.g. Tan Wei Ming" /></div>
+              <div class="form-group"><label>Role / Designation</label><input type="text" id="newRole" placeholder="e.g. Staff Nurse" /></div>
+              <div class="form-group"><label>Email</label><input type="email" id="newEmail" placeholder="email@polyclinic.sg" /></div>
+              <div class="form-group">
+                <label>Staff ID Code <span style="font-weight:400;color:var(--text-light);">(leave blank to auto-generate)</span></label>
+                <input type="text" id="newId" placeholder="e.g. NURSE01 or leave blank" autocomplete="off" style="font-family:monospace;" />
+                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">Must be unique. Letters and numbers only, no spaces.</div>
+              </div>
+              <div class="form-group">
+                <label>Work Type</label>
+                <select id="newWorkType">
+                  <option value="fulltime">Full-time (Mon–Sat)</option>
+                  <option value="parttime">Part-time</option>
+                </select>
+              </div>
+              <div class="form-group" id="parttimeDaysGroup" style="display:none;">
+                <label>Working Sessions (Part-time)</label>
+                <div style="margin-top:8px;overflow-x:auto;">
+                  <table style="border-collapse:collapse;font-size:12px;width:100%;">
+                    <thead>
+                      <tr>
+                        <th style="padding:6px 10px;text-align:left;color:var(--text-light);font-weight:600;width:60px;"></th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Mon</th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Tue</th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Wed</th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Thu</th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Fri</th>
+                        <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Sat</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="padding:6px 10px;font-weight:600;color:var(--teal);font-size:11px;">AM</td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="1" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="2" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="3" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="4" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="5" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="6" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+                      </tr>
+                      <tr style="background:var(--mist);">
+                        <td style="padding:6px 10px;font-weight:600;color:var(--coral);font-size:11px;">PM</td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="1" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="2" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="3" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="4" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="5" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                        <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="pt-session" data-day="6" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p style="font-size:11px;color:var(--text-light);margin-top:6px;">Tick each session the staff member works. Saturday has AM only.</p>
+              </div>
+              <div class="form-group">
+                <label>Blacked-out Dates (comma separated, YYYY-MM-DD)</label>
+                <textarea id="newBlackedOut" placeholder="e.g. 2026-07-15, 2026-08-01"></textarea>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-primary btn-sm" onclick="addStaff()">Save Staff</button>
+                <button class="btn btn-secondary btn-sm" onclick="document.getElementById('addStaffForm').classList.add('hidden')">Cancel</button>
+              </div>
+            </div>
+            <table class="staff-table" id="staffTable">
+              <thead><tr><th>Name</th><th>Role</th><th>ID Code</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="staffTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div class="card-title">Export Data</div>
+            </div>
+            <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Export all leave records to Excel. Select a date range or export everything.</p>
+            <div class="form-group"><label>From Month</label>
+              <select id="exportFrom">
+                <option value="2026-07">July 2026</option>
+                <option value="2026-08">August 2026</option>
+                <option value="2026-09">September 2026</option>
+                <option value="2026-10">October 2026</option>
+                <option value="2026-11">November 2026</option>
+                <option value="2026-12">December 2026</option>
+              </select>
+            </div>
+            <div class="form-group"><label>To Month</label>
+              <select id="exportTo">
+                <option value="2026-07">July 2026</option>
+                <option value="2026-08">August 2026</option>
+                <option value="2026-09">September 2026</option>
+                <option value="2026-10">October 2026</option>
+                <option value="2026-11">November 2026</option>
+                <option value="2026-12" selected>December 2026</option>
+              </select>
+            </div>
+            <button class="btn btn-gold" onclick="exportExcel()">📥 Export Leave Data</button>
+            <button class="btn btn-secondary" style="margin-top:10px;width:100%;" onclick="exportStaffDirectory()">👥 Export Staff Directory</button>
+          </div>
+
+          <div class="card" style="margin-top:24px;">
+            <div class="card-header">
+              <div class="card-title">💾 Data Backup & Restore</div>
+            </div>
+            <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Back up all staff and leave data to a JSON file. Restore it any time — even after downloading a new version of this portal.</p>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="backupData()">⬇️ Download Backup (.json)</button>
+            <label style="display:block;width:100%;">
+              <div class="btn btn-secondary" style="width:100%;text-align:center;cursor:pointer;">⬆️ Restore from Backup (.json)</div>
+              <input type="file" id="restoreInput" accept=".json" style="display:none;" onchange="restoreData(event)">
+            </label>
+            <div id="restoreStatus" style="margin-top:10px;font-size:13px;display:none;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Audit Log</div>
+              <span class="chip chip-navy" id="auditCount">0 entries</span>
+            </div>
+            <div id="auditLog" style="max-height:400px;overflow-y:auto;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Leave Records</div>
+          <div style="display:flex;gap:8px;">
+            <select id="adminFilterStaff" onchange="renderAdminTable()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;">
+              <option value="">All Staff</option>
+            </select>
+            <select id="adminFilterMonth" onchange="renderAdminTable()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;">
+              <option value="">All Months</option>
+              <option value="2026-07">July 2026</option>
+              <option value="2026-08">August 2026</option>
+              <option value="2026-09">September 2026</option>
+              <option value="2026-10">October 2026</option>
+              <option value="2026-11">November 2026</option>
+              <option value="2026-12">December 2026</option>
+            </select>
+          </div>
+        </div>
+        <table class="staff-table" id="adminLeaveTable">
+          <thead><tr><th>Staff</th><th>Date</th><th>Session</th><th>Leave Type</th><th>Submitted</th><th>Last Modified</th><th>Actions</th></tr></thead>
+          <tbody id="adminLeaveTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== EDIT STAFF MODAL ====== -->
+<div class="modal-overlay" id="editStaffModal">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-title">Edit Staff</div>
+    <div class="modal-date" id="editStaffIdLabel"></div>
+    <input type="hidden" id="editStaffId" />
+    <div class="form-group">
+      <label>Staff ID Code</label>
+      <input type="text" id="editStaffIdNew" style="font-family:monospace;" autocomplete="off" />
+      <div style="font-size:11px;color:var(--text-light);margin-top:4px;">Changing the ID will update all existing leave records for this staff member.</div>
+    </div>
+    <div class="form-group"><label>Full Name</label><input type="text" id="editName" /></div>
+    <div class="form-group"><label>Role / Designation</label><input type="text" id="editRole" /></div>
+    <div class="form-group"><label>Email</label><input type="email" id="editEmail" /></div>
+    <div class="form-group">
+      <label>Work Type</label>
+      <select id="editWorkType" onchange="document.getElementById('editParttimeGroup').style.display=this.value==='parttime'?'block':'none'">
+        <option value="fulltime">Full-time (Mon–Sat)</option>
+        <option value="parttime">Part-time</option>
+      </select>
+    </div>
+    <div class="form-group" id="editParttimeGroup" style="display:none;">
+      <label>Working Sessions (Part-time)</label>
+      <div style="margin-top:8px;overflow-x:auto;">
+        <table style="border-collapse:collapse;font-size:12px;width:100%;">
+          <thead><tr>
+            <th style="padding:6px 10px;width:60px;"></th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Mon</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Tue</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Wed</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Thu</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Fri</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--text-light);font-weight:600;">Sat</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td style="padding:6px 10px;font-weight:600;color:var(--teal);font-size:11px;">AM</td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="1" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="2" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="3" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="4" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="5" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="6" data-sess="AM" style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></td>
+            </tr>
+            <tr style="background:var(--mist);">
+              <td style="padding:6px 10px;font-weight:600;color:var(--coral);font-size:11px;">PM</td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="1" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="2" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="3" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="4" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="5" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+              <td style="padding:6px 8px;text-align:center;"><input type="checkbox" class="edit-pt-session" data-day="6" data-sess="PM" style="accent-color:var(--coral);width:16px;height:16px;cursor:pointer;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Blacked-out Dates (comma separated, YYYY-MM-DD)</label>
+      <textarea id="editBlackedOut" placeholder="e.g. 2026-07-15, 2026-08-01"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeEditStaff()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditStaff()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DATE RANGE LEAVE MODAL ====== -->
+<div class="modal-overlay" id="rangeLeaveModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-title">Apply Leave — Date Range</div>
+    <div class="modal-date">Select a start and end date. Weekends, public holidays, your off days and blacked-out dates will be automatically skipped.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 0;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Start Date</label>
+        <input type="date" id="rangeStart" min="2026-07-01" max="2026-12-31" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;" />
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>End Date</label>
+        <input type="date" id="rangeEnd" min="2026-07-01" max="2026-12-31" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;" />
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:16px;">
+      <label>Session</label>
+      <div class="session-toggle">
+        <div class="session-btn range-sess-btn" data-sess="AM" onclick="selectRangeSession('AM')">🌅 AM Only</div>
+        <div class="session-btn range-sess-btn" data-sess="PM" onclick="selectRangeSession('PM')">🌆 PM Only</div>
+        <div class="session-btn range-sess-btn" data-sess="FULL" onclick="selectRangeSession('FULL')">📅 Full Day</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Leave Type</label>
+      <div class="leave-types" id="rangeLeaveTypeGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="rangeNotes" placeholder="Any additional notes..."></textarea>
+    </div>
+
+    <div id="rangeDatePreview" style="display:none;margin-bottom:16px;padding:12px 14px;background:var(--teal-pale);border-radius:var(--radius-sm);font-size:13px;color:var(--teal);">
+      <strong id="rangeDayCount"></strong> — <span id="rangeDayList"></span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeRangeModal()">Cancel</button>
+      <button class="btn btn-secondary" onclick="previewRange()">Preview Dates</button>
+      <button class="btn btn-primary" onclick="saveRangeLeave()">Apply Leave</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MULTI-DATE LEAVE MODAL ====== -->
+<div class="modal-overlay" id="multiLeaveModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-title">Apply Leave</div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:8px;">Applying leave for <strong id="multiDateCount"></strong>:</div>
+      <div id="multiDateChips" style="display:flex;flex-wrap:wrap;gap:6px;max-height:100px;overflow-y:auto;padding:8px;background:var(--mist);border-radius:var(--radius-sm);"></div>
+    </div>
+    <div class="form-group">
+      <label>Session</label>
+      <div class="session-toggle">
+        <div class="session-btn multi-sess-btn" data-sess="AM" onclick="selectMultiSession('AM')">🌅 AM Only</div>
+        <div class="session-btn multi-sess-btn" data-sess="PM" onclick="selectMultiSession('PM')">🌆 PM Only</div>
+        <div class="session-btn multi-sess-btn" data-sess="FULL" onclick="selectMultiSession('FULL')">📅 Full Day</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Leave Type</label>
+      <div class="leave-types" id="multiLeaveTypeGrid"></div>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="multiNotes" placeholder="Any additional notes..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeMultiLeaveModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMultiLeave()">✓ Apply Leave</button>
+    </div>
+    <div id="multiBusyWarningBar" style="display:none;margin-top:12px;padding:12px 14px;background:#fff8e6;border-radius:8px;border:1px solid #f59e0b;font-size:13px;color:#92400e;"></div>
+  </div>
+</div>
+
+<!-- ====== ALP REMINDER MODAL ====== -->
+<div class="modal-overlay" id="alpReminderModal" style="z-index:1100;">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-title" style="color:#92400e;">⭐ Annual Leave (Priority)</div>
+    <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:10px;padding:16px;margin:12px 0;font-size:13px;line-height:1.7;color:#78350f;">
+      <p style="font-weight:600;margin-bottom:10px;">AL (Priority) can only be used for <u>one stretch</u> of leave for this projection period.</p>
+      <p style="margin-bottom:8px;">The following will automatically be considered as <strong>AL (Priority)</strong>:</p>
+      <ol style="padding-left:18px;margin:0;">
+        <li>Any stretch of AL <strong>13 days or longer</strong>.</li>
+        <li style="margin-top:6px;">Any stretch of AL that <strong>includes or is adjacent to a Public Holiday</strong>.</li>
+      </ol>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeAlpReminder()" style="background:#d97706;border-color:#d97706;">I Understand, Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LEAVE MODAL ====== -->
+<div class="modal-overlay" id="leaveModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Apply Leave</div>
+    <div class="modal-date" id="modalDateLabel"></div>
+
+    <div class="form-group">
+      <label>Session</label>
+      <div class="session-toggle">
+        <div class="session-btn" data-sess="AM" onclick="selectSession('AM')">🌅 AM Only</div>
+        <div class="session-btn" data-sess="PM" onclick="selectSession('PM')">🌆 PM Only</div>
+        <div class="session-btn" data-sess="FULL" onclick="selectSession('FULL')">📅 Full Day</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Leave Type</label>
+      <div class="leave-types" id="leaveTypeGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="leaveNotes" placeholder="Any additional notes..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger hidden" id="btnDeleteLeave" onclick="showDeleteConfirm()">🗑 Delete</button>
+      <button class="btn btn-primary" id="btnSaveLeave" onclick="saveLeave()">Save Leave</button>
+    </div>
+    <div id="busyWarningBar" style="display:none;margin-top:12px;padding:12px 14px;background:#fff8e6;border-radius:8px;border:1px solid #f59e0b;font-size:13px;color:#92400e;"></div>
+    <div id="deleteConfirmBar" style="display:none;margin-top:12px;padding:12px 14px;background:#fff0ee;border-radius:8px;border:1px solid #f5c6bb;display:none;align-items:center;justify-content:space-between;gap:10px;">
+      <span style="font-size:13px;color:#c0392b;font-weight:600;">Confirm delete this leave?</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-sm btn-secondary" onclick="hideDeleteConfirm()">No, keep it</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteLeave()">Yes, delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER
+// ============================================================
+
+const LEAVE_TYPES = [
+  { code: 'AL', label: 'Annual Leave', cls: 'badge-al' },
+  { code: 'ALP', label: 'Annual Leave (Priority)', cls: 'badge-alp' },
+  { code: 'ML', label: 'Medical Leave', cls: 'badge-ml' },
+  { code: 'HL', label: 'Hospitalisation Leave', cls: 'badge-hl' },
+  { code: 'MA', label: 'Medical Appointment', cls: 'badge-ma' },
+  { code: 'CCL', label: 'Childcare Leave', cls: 'badge-cl' },
+  { code: 'FCL', label: 'Family Care Leave', cls: 'badge-fl' },
+  { code: 'PAT', label: 'Paternity Leave', cls: 'badge-pat' },
+  { code: 'MAT', label: 'Maternity Leave', cls: 'badge-mat' },
+  { code: 'NPL', label: 'No-Pay Leave', cls: 'badge-npl' },
+  { code: 'CONF', label: 'Conference Leave', cls: 'badge-conf' },
+  { code: 'CM', label: 'Course / Meeting', cls: 'badge-cm' },
+  { code: 'BDAY', label: 'Birthday Leave', cls: 'badge-bday' },
+  { code: 'TRAIN', label: 'Training Leave', cls: 'badge-train' },
+];
+
+// Singapore Public Holidays 2026 (key ones)
+const PUBLIC_HOLIDAYS_2026 = [
+  '2026-01-01','2026-01-28','2026-01-29',
+  '2026-02-19','2026-04-03','2026-05-01',
+  '2026-05-12','2026-06-02','2026-07-31',
+  '2026-08-09','2026-10-19','2026-11-04',
+  '2026-12-25'
+];
+
+// Special half-day eves (AM only)
+const SPECIAL_EVES = ['2026-12-24','2026-12-31'];
+
+const ADMIN_PASSWORD = 'admin2026';
+
+function getData() {
+  return JSON.parse(localStorage.getItem('polyLeaveData') || JSON.stringify({
+    staff: [],
+    leaves: [],
+    audit: []
+  }));
+}
+
+function saveData(data) {
+  localStorage.setItem('polyLeaveData', JSON.stringify(data));
+}
+
+function generateId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'SG-';
+  for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return id;
+}
+
+function getStaffById(id) {
+  return getData().staff.find(s => s.id === id);
+}
+
+function isPublicHoliday(dateStr) {
+  return PUBLIC_HOLIDAYS_2026.includes(dateStr);
+}
+
+function isSpecialEve(dateStr) {
+  return SPECIAL_EVES.includes(dateStr);
+}
+
+function getDayOfWeek(dateStr) {
+  // 0=Sun, 1=Mon, ... 6=Sat
+  return new Date(dateStr + 'T12:00:00').getDay();
+}
+
+function isWorkday(dateStr, staff) {
+  const dow = getDayOfWeek(dateStr);
+  if (dow === 0) return false; // Sunday
+  if (isPublicHoliday(dateStr)) return false;
+  if (staff && staff.workType === 'parttime') {
+    const workDays = (staff.workDays || []).map(Number);
+    if (!workDays.includes(dow)) return false;
+  }
+  return true;
+}
+
+// Returns which sessions a staff member works on a given date
+function getWorkSessions(dateStr, staff) {
+  const dow = getDayOfWeek(dateStr);
+  const isSat = dow === 6;
+  const isEve = isSpecialEve(dateStr);
+
+  if (!isWorkday(dateStr, staff)) return [];
+
+  if (staff && staff.workType === 'parttime' && staff.workSessions && staff.workSessions.length) {
+    const sessions = staff.workSessions
+      .filter(ws => ws.day === dow)
+      .map(ws => ws.sess);
+    // Saturdays and eves are AM only
+    return (isSat || isEve) ? sessions.filter(s => s === 'AM') : sessions;
+  }
+
+  // Full-time: AM+PM on weekdays, AM only on Sat/Eve
+  return (isSat || isEve) ? ['AM'] : ['AM', 'PM'];
+}
+
+function isBlocked(dateStr, staff) {
+  if (!staff || !staff.blackedOut) return false;
+  return staff.blackedOut.includes(dateStr);
+}
+
+function logAudit(action, details) {
+  const data = getData();
+  data.audit.unshift({
+    action,
+    details,
+    ts: new Date().toISOString(),
+    user: currentUser ? (currentUser.name || currentUser.id) : 'Admin'
+  });
+  saveData(data);
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+let currentUser = null;
+let isAdmin = false;
+let myMonth = { year: 2026, month: 7 };
+let ovMonth = { year: 2026, month: 7 };
+let selectedDates = new Set();
+
+function doLogin() {
+  const id = document.getElementById('loginId').value.trim().toUpperCase();
+  const data = getData();
+  const staff = data.staff.find(s => s.id === id);
+  if (!staff) {
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  currentUser = staff;
+  isAdmin = false;
+  enterApp();
+}
+
+function showAdminLogin() {
+  document.getElementById('adminLoginForm').classList.toggle('hidden');
+}
+
+function doAdminLogin() {
+  const pw = document.getElementById('adminPw').value;
+  if (pw !== ADMIN_PASSWORD) {
+    alert('Incorrect admin password');
+    return;
+  }
+  currentUser = { id: 'ADMIN', name: 'Administrator' };
+  isAdmin = true;
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('topbarName').textContent = currentUser.name || currentUser.id;
+  if (isAdmin) {
+    document.getElementById('navTabAdmin').classList.remove('hidden');
+    switchTab('admin');
+  } else {
+    document.getElementById('myIdDisplay').textContent = currentUser.id;
+    document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.name}!`;
+    renderMyCalendar();
+    renderMyTable();
+    updateStats();
+  }
+}
+
+function doLogout() {
+  currentUser = null;
+  isAdmin = false;
+  selectedDates.clear();
+  document.getElementById('navTabAdmin').classList.add('hidden');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginId').value = '';
+  document.getElementById('adminPw').value = '';
+  document.getElementById('adminLoginForm').classList.add('hidden');
+  document.getElementById('loginError').style.display = 'none';
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab) {
+  // Guard: staff cannot access admin tab
+  if (!isAdmin && tab === 'admin') return;
+
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+
+  document.getElementById('tabMyLeave').classList.add('hidden');
+  document.getElementById('tabOverview').classList.add('hidden');
+  document.getElementById('tabAdminContent').classList.add('hidden');
+
+  if (tab === 'myLeave') {
+    document.getElementById('tabMyLeave').classList.remove('hidden');
+    renderMyCalendar();
+    renderMyTable();
+    updateStats();
+  } else if (tab === 'overview') {
+    document.getElementById('tabOverview').classList.remove('hidden');
+    renderOverview();
+  } else if (tab === 'admin') {
+    document.getElementById('tabAdminContent').classList.remove('hidden');
+    renderStaffTable();
+    renderAdminTable();
+    renderAuditLog();
+    updateAdminFilter();
+  }
+}
+
+// ============================================================
+// MY CALENDAR
+// ============================================================
+function changeMyMonth(delta) {
+  myMonth.month += delta;
+  if (myMonth.month > 12) { myMonth.month = 1; myMonth.year++; }
+  if (myMonth.month < 1) { myMonth.month = 12; myMonth.year--; }
+  // Clamp to Jul-Dec 2026
+  if (myMonth.year < 2026 || (myMonth.year === 2026 && myMonth.month < 7)) { myMonth.year = 2026; myMonth.month = 7; }
+  if (myMonth.year > 2026 || (myMonth.year === 2026 && myMonth.month > 12)) { myMonth.year = 2026; myMonth.month = 12; }
+  renderMyCalendar();
+}
+
+function renderMyCalendar() {
+  const { year, month } = myMonth;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('myCalMonthLabel').textContent = `${months[month-1]} ${year}`;
+
+  const grid = document.getElementById('myCalGrid');
+  // Clear old cells but keep headers
+  const headers = Array.from(grid.querySelectorAll('.cal-day-header'));
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
+
+  const data = getData();
+  const myLeaves = data.leaves.filter(l => l.staffId === currentUser.id);
+
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Blank cells
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-cell empty';
+    grid.appendChild(blank);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow = getDayOfWeek(dateStr);
+    const isSun = dow === 0;
+    const isSat = dow === 6;
+    const isPH = isPublicHoliday(dateStr);
+    const isEve = isSpecialEve(dateStr);
+    const offDay = !isAdmin && !isWorkday(dateStr, currentUser);
+    const blocked = !isAdmin && isBlocked(dateStr, currentUser);
+    const isToday = dateStr === today;
+
+    const dayLeaves = myLeaves.filter(l => l.date === dateStr);
+    const hasAM = dayLeaves.some(l => l.session === 'AM' || l.session === 'FULL');
+    const hasPM = dayLeaves.some(l => l.session === 'PM' || l.session === 'FULL');
+
+    const cell = document.createElement('div');
+    let cls = 'cal-cell';
+    if (isSun) cls += ' sunday';
+    else if (isPH) cls += ' public-holiday';
+    else if (blocked) cls += ' blocked';
+    else if (offDay) cls += ' off-day';
+    else if (isSat) cls += ' saturday';
+    if (isToday) cls += ' today';
+    if (hasAM && hasPM) cls += ' has-leave-full';
+    else if (hasAM) cls += ' has-leave-am';
+    else if (hasPM) cls += ' has-leave-pm';
+    cell.className = cls;
+
+    let inner = `<div class="cal-date">${d}</div>`;
+
+    if (isPH) inner += `<span class="cal-label label-ph">PH</span>`;
+    else if (isEve) inner += `<span class="cal-label label-special">EVE</span>`;
+    else if (blocked) inner += `<span class="cal-label label-blocked">BLOCK</span>`;
+    else if (offDay && !isSun) inner += `<span class="cal-label label-off">OFF</span>`;
+
+    dayLeaves.forEach(lv => {
+      const lt = LEAVE_TYPES.find(x => x.code === lv.leaveType);
+      inner += `<div>`;
+      if (lv.session === 'FULL') inner += `<span class="cal-label label-full" style="font-size:9px;">FULL</span> `;
+      else inner += `<span class="cal-label label-${lv.session.toLowerCase()}" style="font-size:9px;">${lv.session}</span> `;
+      inner += `<span class="cal-badge ${lt?.cls||'badge-al'}" style="font-size:9px;">${lv.leaveType}</span></div>`;
+    });
+
+    cell.innerHTML = inner;
+
+    // Click handler: if day has existing leave, open edit modal directly; otherwise toggle multi-select
+    if (!isSun && !isPH && !offDay && !blocked) {
+      cell.dataset.date = dateStr;
+      if (selectedDates.has(dateStr)) cell.classList.add('multi-selected');
+      cell.onclick = () => {
+        if (dayLeaves.length > 0) {
+          // Editing existing — open single edit modal
+          openLeaveModal(dateStr, dayLeaves[0], isSat, isEve);
+        } else {
+          toggleDateSelect(dateStr, cell);
+        }
+      };
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+// ============================================================
+// MULTI-DATE SELECTION
+// ============================================================
+
+function toggleDateSelect(dateStr, cell) {
+  if (selectedDates.has(dateStr)) {
+    selectedDates.delete(dateStr);
+    cell.classList.remove('multi-selected');
+  } else {
+    selectedDates.add(dateStr);
+    cell.classList.add('multi-selected');
+  }
+  updateMultiSelectBar();
+}
+
+function updateMultiSelectBar() {
+  const bar = document.getElementById('multiSelectBar');
+  const count = selectedDates.size;
+  if (count > 0) {
+    bar.style.display = 'flex';
+    document.getElementById('multiSelectCount').textContent =
+      `${count} date${count > 1 ? 's' : ''} selected`;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function clearMultiSelect() {
+  selectedDates.clear();
+  document.querySelectorAll('.cal-cell.multi-selected').forEach(c => c.classList.remove('multi-selected'));
+  updateMultiSelectBar();
+}
+
+let selectedMultiSession = null;
+let selectedMultiLeaveType = null;
+
+function openMultiLeaveModal() {
+  if (!selectedDates.size) return;
+  selectedMultiSession = null;
+  selectedMultiLeaveType = null;
+
+  const sorted = Array.from(selectedDates).sort();
+  document.getElementById('multiDateCount').textContent =
+    `${sorted.length} date${sorted.length > 1 ? 's' : ''}`;
+
+  // Render date chips
+  const chips = document.getElementById('multiDateChips');
+  chips.innerHTML = sorted.map(d => {
+    const dt = new Date(d + 'T12:00:00');
+    const label = dt.toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short' });
+    return `<span class="chip chip-teal">${label}</span>`;
+  }).join('');
+
+  // Reset session buttons
+  document.querySelectorAll('.multi-sess-btn').forEach(b => b.classList.remove('active'));
+
+  // Build leave type grid
+  const grid = document.getElementById('multiLeaveTypeGrid');
+  grid.innerHTML = '';
+  LEAVE_TYPES.forEach(lt => {
+    const btn = document.createElement('div');
+    btn.className = 'leave-type-btn';
+    btn.textContent = lt.label;
+    btn.onclick = () => {
+      document.querySelectorAll('#multiLeaveTypeGrid .leave-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMultiLeaveType = lt.code;
+      if (lt.code === 'ALP') showAlpReminder();
+    };
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('multiNotes').value = '';
+  document.getElementById('multiBusyWarningBar').style.display = 'none';
+  document.getElementById('multiLeaveModal').classList.add('open');
+}
+
+function selectMultiSession(sess) {
+  selectedMultiSession = sess;
+  document.querySelectorAll('.multi-sess-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.multi-sess-btn[data-sess="${sess}"]`)?.classList.add('active');
+  // Show busy warning for selected session across all dates
+  const dates = Array.from(selectedDates);
+  const bar = document.getElementById('multiBusyWarningBar');
+  const warning = getBusyWarning(dates, sess);
+  if (warning) { bar.innerHTML = warning; bar.style.display = 'block'; }
+  else bar.style.display = 'none';
+}
+
+function closeMultiLeaveModal() {
+  document.getElementById('multiLeaveModal').classList.remove('open');
+}
+
+function saveMultiLeave() {
+  if (!selectedMultiSession) { alert('Please select a session'); return; }
+  if (!selectedMultiLeaveType) { alert('Please select a leave type'); return; }
+
+  const data = getData();
+  const now = new Date().toISOString();
+  const notes = document.getElementById('multiNotes').value.trim();
+  const dates = Array.from(selectedDates).sort();
+  let added = 0;
+
+  dates.forEach(dateStr => {
+    const exists = data.leaves.find(l =>
+      l.staffId === currentUser.id && l.date === dateStr &&
+      (l.session === selectedMultiSession || l.session === 'FULL' || selectedMultiSession === 'FULL')
+    );
+    if (exists) return;
+    data.leaves.push({
+      id: 'LV-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+      staffId: currentUser.id,
+      date: dateStr,
+      session: selectedMultiSession,
+      leaveType: selectedMultiLeaveType,
+      notes,
+      submitted: now,
+      lastModified: now
+    });
+    added++;
+  });
+
+  saveData(data);
+  logAudit('add_multi', `${currentUser.name} applied ${selectedMultiLeaveType} (${selectedMultiSession}) for ${added} date(s): ${dates.join(', ')}`);
+  closeMultiLeaveModal();
+  clearMultiSelect();
+  renderMyCalendar();
+  renderMyTable();
+  updateStats();
+  if (added < dates.length) {
+    alert(`✅ Leave applied for ${added} date(s). ${dates.length - added} date(s) already had leave and were skipped.`);
+  }
+}
+
+document.getElementById('multiLeaveModal').addEventListener('click', function(e) {
+  if (e.target === this) closeMultiLeaveModal();
+});
+
+// ============================================================
+// LEAVE MODAL
+// ============================================================
+let modalDate = null, modalExisting = null, modalIsSat = false, modalIsEve = false;
+let selectedSession = null, selectedLeaveType = null;
+
+function openLeaveModal(dateStr, existing, isSat, isEve) {
+  modalDate = dateStr;
+  modalExisting = existing;
+  modalIsSat = isSat;
+  modalIsEve = isEve;
+  selectedSession = existing ? existing.session : (isSat || isEve ? 'AM' : null);
+  selectedLeaveType = existing ? existing.leaveType : null;
+
+  const dt = new Date(dateStr + 'T12:00:00');
+  const formatted = dt.toLocaleDateString('en-SG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('modalDateLabel').textContent = formatted;
+  document.getElementById('modalTitle').textContent = existing ? 'Edit Leave' : 'Apply Leave';
+  document.getElementById('leaveNotes').value = existing ? (existing.notes || '') : '';
+
+  // Session buttons — only target the single-day leave modal's buttons
+  const availSessions = getWorkSessions(dateStr, currentUser);
+  document.querySelectorAll('#leaveModal .session-btn').forEach(btn => {
+    btn.classList.remove('active');
+    const s = btn.dataset.sess;
+    const canFull = availSessions.includes('AM') && availSessions.includes('PM');
+    const allowedBySchedule = s === 'FULL' ? canFull : availSessions.includes(s);
+    const allowedByExisting = existing && (s === existing.session);
+    const allowed = allowedBySchedule || allowedByExisting;
+    if (!allowed) {
+      btn.style.opacity = '0.3'; btn.style.pointerEvents = 'none';
+    } else {
+      btn.style.opacity = '1'; btn.style.pointerEvents = '';
+    }
+  });
+  if (selectedSession) {
+    document.querySelector(`#leaveModal .session-btn[data-sess="${selectedSession}"]`)?.classList.add('active');
+  }
+
+  // Leave type buttons
+  const grid = document.getElementById('leaveTypeGrid');
+  grid.innerHTML = '';
+  LEAVE_TYPES.forEach(lt => {
+    const btn = document.createElement('div');
+    btn.className = 'leave-type-btn' + (selectedLeaveType === lt.code ? ' active' : '');
+    btn.textContent = lt.label;
+    btn.onclick = () => {
+      document.querySelectorAll('.leave-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedLeaveType = lt.code;
+      if (lt.code === 'ALP') showAlpReminder();
+    };
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('btnDeleteLeave').classList.toggle('hidden', !existing);
+
+  // Show busy-day warning for new leaves (not edits)
+  const busyBar = document.getElementById('busyWarningBar');
+  if (!existing) {
+    // Check both sessions upfront so warning shows immediately on open
+    const warning = getBusyWarning([dateStr], 'FULL');
+    if (warning) { busyBar.innerHTML = warning; busyBar.style.display = 'block'; }
+    else busyBar.style.display = 'none';
+  } else {
+    busyBar.style.display = 'none';
+  }
+
+  document.getElementById('leaveModal').classList.add('open');
+}
+
+// Returns a warning message if any of the given date+session combos have people on leave
+function getBusyWarning(dates, session) {
+  const data = getData();
+  const results = [];
+
+  dates.forEach(dateStr => {
+    const dow = new Date(dateStr + 'T12:00:00').getDay();
+    if (dow === 0 || isPublicHoliday(dateStr)) return;
+
+    const sessionsToCheck = session === 'FULL' ? ['AM', 'PM'] : [session];
+    sessionsToCheck.forEach(sess => {
+      // Count people on leave for this date+session (AM counts AM and FULL; PM counts PM and FULL)
+      const count = data.leaves.filter(l =>
+        l.date === dateStr &&
+        (l.session === sess || l.session === 'FULL')
+      ).length;
+
+      if (count === 0) return;
+
+      const dt = new Date(dateStr + 'T12:00:00');
+      const dateLabel = dates.length > 1
+        ? dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short' }) + ' ' + sess
+        : sess;
+      const level = count >= 7 ? 'high' : count >= 4 ? 'moderate' : 'low';
+      results.push({ dateLabel, count, level });
+    });
+  });
+
+  if (!results.length) return null;
+
+  const high = results.filter(r => r.level === 'high');
+  const moderate = results.filter(r => r.level === 'moderate');
+  const low = results.filter(r => r.level === 'low');
+
+  const parts = [];
+  if (high.length) parts.push(`🔴 <strong>${high.map(r => `${r.dateLabel} (${r.count} staff)`).join(', ')}</strong> — high demand`);
+  if (moderate.length) parts.push(`🟡 <strong>${moderate.map(r => `${r.dateLabel} (${r.count} staff)`).join(', ')}</strong> — moderate demand`);
+  if (low.length) parts.push(`🟢 <strong>${low.map(r => `${r.dateLabel} (${r.count} staff)`).join(', ')}</strong> already has leave`);
+
+  return `⚠️ <strong>Note:</strong> ${parts.join(' &nbsp;|&nbsp; ')}. You can still apply.`;
+}
+
+function showAlpReminder() {
+  document.getElementById('alpReminderModal').classList.add('open');
+}
+
+function closeAlpReminder() {
+  document.getElementById('alpReminderModal').classList.remove('open');
+}
+
+function selectSession(sess) {
+  selectedSession = sess;
+  document.querySelectorAll('#leaveModal .session-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`#leaveModal .session-btn[data-sess="${sess}"]`)?.classList.add('active');
+  // Refresh busy warning for the selected session
+  if (modalDate && !modalExisting) {
+    const busyBar = document.getElementById('busyWarningBar');
+    const warning = getBusyWarning([modalDate], sess);
+    if (warning) { busyBar.innerHTML = warning; busyBar.style.display = 'block'; }
+    else busyBar.style.display = 'none';
+  }
+}
+
+function closeModal() {
+  document.getElementById('leaveModal').classList.remove('open');
+  document.getElementById('busyWarningBar').style.display = 'none';
+  hideDeleteConfirm();
+  modalDate = null; modalExisting = null;
+  selectedSession = null; selectedLeaveType = null;
+}
+
+function saveLeave() {
+  if (!selectedSession) { alert('Please select a session (AM, PM, or Full Day)'); return; }
+  if (!selectedLeaveType) { alert('Please select a leave type'); return; }
+
+  const data = getData();
+  const now = new Date().toISOString();
+  const notes = document.getElementById('leaveNotes').value.trim();
+
+  if (modalExisting) {
+    // Amendment
+    const idx = data.leaves.findIndex(l => l.id === modalExisting.id);
+    const old = { ...data.leaves[idx] };
+    data.leaves[idx] = { ...old, session: selectedSession, leaveType: selectedLeaveType, notes, lastModified: now };
+    saveData(data);
+    logAudit('amend', `${currentUser.name} amended leave on ${modalDate}: ${old.session}/${old.leaveType} → ${selectedSession}/${selectedLeaveType}`);
+  } else {
+    const newLeave = {
+      id: 'LV-' + Date.now(),
+      staffId: currentUser.id,
+      date: modalDate,
+      session: selectedSession,
+      leaveType: selectedLeaveType,
+      notes,
+      submitted: now,
+      lastModified: now
+    };
+    data.leaves.push(newLeave);
+    saveData(data);
+    logAudit('add', `${currentUser.name} applied ${selectedLeaveType} (${selectedSession}) on ${modalDate}`);
+  }
+  closeModal();
+  renderMyCalendar();
+  renderMyTable();
+  updateStats();
+}
+
+function showDeleteConfirm() {
+  document.getElementById('deleteConfirmBar').style.display = 'flex';
+  document.getElementById('btnDeleteLeave').style.display = 'none';
+  document.getElementById('btnSaveLeave').style.display = 'none';
+}
+
+function hideDeleteConfirm() {
+  document.getElementById('deleteConfirmBar').style.display = 'none';
+  document.getElementById('btnDeleteLeave').style.display = '';
+  document.getElementById('btnSaveLeave').style.display = '';
+}
+
+function deleteLeave() {
+  if (!modalExisting) return;
+  const data = getData();
+  const idx = data.leaves.findIndex(l => l.id === modalExisting.id);
+  if (idx !== -1) {
+    const deletedType = modalExisting.leaveType;
+    const deletedSession = modalExisting.session;
+    const deletedDate = modalDate;
+    const userName = currentUser ? (currentUser.name || currentUser.id) : 'Unknown';
+    data.leaves.splice(idx, 1);
+    saveData(data);
+    logAudit('delete', `${userName} deleted ${deletedType} (${deletedSession}) on ${deletedDate}`);
+  }
+  closeModal();
+  renderMyCalendar();
+  renderMyTable();
+  updateStats();
+}
+
+// ============================================================
+// MY LEAVE TABLE
+// ============================================================
+function renderMyTable() {
+  const data = getData();
+  const myLeaves = data.leaves
+    .filter(l => l.staffId === currentUser.id)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const tbody = document.getElementById('myLeaveTableBody');
+  tbody.innerHTML = '';
+  if (!myLeaves.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:24px;">No leave records yet. Click on a date in the calendar to apply leave.</td></tr>';
+    return;
+  }
+  myLeaves.forEach(lv => {
+    const lt = LEAVE_TYPES.find(x => x.code === lv.leaveType);
+    const dt = new Date(lv.date + 'T12:00:00').toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+    const sub = new Date(lv.submitted).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${dt}</td>
+      <td><span class="chip ${lv.session==='FULL'?'chip-navy':lv.session==='AM'?'chip-teal':'chip-coral'}">${lv.session}</span></td>
+      <td><span class="cal-badge ${lt?.cls||'badge-al'}">${lv.leaveType}</span> ${lt?.label||''}</td>
+      <td><span style="color:var(--teal);font-weight:600;">✓ Submitted</span></td>
+      <td style="color:var(--text-light);font-size:12px;">${sub}</td>
+      <td><button class="btn btn-sm btn-secondary" onclick="editLeave('${lv.id}')">Edit</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function editLeave(id) {
+  const data = getData();
+  const lv = data.leaves.find(l => l.id === id);
+  if (!lv) return;
+  const dow = getDayOfWeek(lv.date);
+  openLeaveModal(lv.date, lv, dow === 6, isSpecialEve(lv.date));
+}
+
+function updateStats() {
+  const data = getData();
+  const myLeaves = data.leaves.filter(l => l.staffId === currentUser.id);
+  const countDays = lv => lv.session === 'FULL' ? 1 : 0.5;
+  document.getElementById('statTotal').textContent = myLeaves.reduce((a, l) => a + countDays(l), 0).toFixed(1);
+  document.getElementById('statAL').textContent = myLeaves.filter(l => l.leaveType === 'AL').reduce((a, l) => a + countDays(l), 0).toFixed(1);
+  document.getElementById('statML').textContent = myLeaves.filter(l => l.leaveType === 'ML').reduce((a, l) => a + countDays(l), 0).toFixed(1);
+  document.getElementById('statOther').textContent = myLeaves.filter(l => !['AL','ML'].includes(l.leaveType)).reduce((a, l) => a + countDays(l), 0).toFixed(1);
+}
+
+// ============================================================
+// OVERVIEW
+// ============================================================
+function changeOvMonth(delta) {
+  ovMonth.month += delta;
+  if (ovMonth.month > 12) { ovMonth.month = 1; ovMonth.year++; }
+  if (ovMonth.month < 1) { ovMonth.month = 12; ovMonth.year--; }
+  if (ovMonth.year < 2026 || (ovMonth.year === 2026 && ovMonth.month < 7)) { ovMonth.year = 2026; ovMonth.month = 7; }
+  if (ovMonth.year > 2026 || (ovMonth.year === 2026 && ovMonth.month > 12)) { ovMonth.year = 2026; ovMonth.month = 12; }
+  renderOverview();
+}
+
+function renderOverview() {
+  const { year, month } = ovMonth;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('ovMonthLabel').textContent = `${months[month-1]} ${year}`;
+
+  const data = getData();
+  const grid = document.getElementById('ovGrid');
+
+  // Rebuild grid HTML entirely including headers — avoids detach/reattach issues
+  const dayHeaders = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html = dayHeaders.map(d => `<div class="ov-header">${d}</div>`).join('');
+
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const colorClass = (n) => n === 0 ? 'zero' : n >= 7 ? 'danger' : n >= 4 ? 'warn' : 'ok';
+
+  // Blank cells before first day
+  for (let i = 0; i < firstDay; i++) html += `<div></div>`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow = new Date(dateStr + 'T12:00:00').getDay();
+    const isSun = dow === 0;
+    const isSat = dow === 6;
+    const isPH = isPublicHoliday(dateStr);
+    const isEve = isSpecialEve(dateStr);
+
+    let cls = 'ov-cell';
+    if (isSun || (isPH && isSun)) cls += ' weekend';
+    else if (isPH) cls += ' ph';
+    else if (isSat) cls += ' half-day';
+    else if (isEve) cls += ' special-eve';
+
+    let content = `<div class="ov-date">${d}</div>`;
+
+    if (isSun) {
+      content += `<span style="font-size:10px;color:#bbb;">–</span>`;
+    } else if (isPH) {
+      content += `<span style="font-size:10px;color:#a855f7;font-weight:600;">PH</span>`;
+    } else {
+      const dayLeaves = data.leaves.filter(l => l.date === dateStr);
+      const amCount = dayLeaves.filter(l => l.session === 'AM' || l.session === 'FULL').length;
+      const pmCount = (!isSat && !isEve) ? dayLeaves.filter(l => l.session === 'PM' || l.session === 'FULL').length : null;
+
+      // Check if current user has leave on this day
+      const myLeave = !isAdmin && currentUser ? dayLeaves.filter(l => l.staffId === currentUser.id) : [];
+      const myAM = myLeave.some(l => l.session === 'AM' || l.session === 'FULL');
+      const myPM = myLeave.some(l => l.session === 'PM' || l.session === 'FULL');
+
+      if (isEve) content += `<div style="font-size:9px;color:#d97706;margin-bottom:2px;font-weight:600;">Eve ★</div>`;
+      else if (isSat) content += `<div style="font-size:9px;color:#aaa;margin-bottom:2px;">AM only</div>`;
+
+      content += `<div class="ov-session am"><span>AM${myAM ? ' <span title="Your leave" style="color:var(--teal);font-weight:900;">✦</span>' : ''}</span><span class="ov-count ${colorClass(amCount)}">${amCount}</span></div>`;
+      if (pmCount !== null) {
+        content += `<div class="ov-session pm"><span>PM${myPM ? ' <span title="Your leave" style="color:var(--coral);font-weight:900;">✦</span>' : ''}</span><span class="ov-count ${colorClass(pmCount)}">${pmCount}</span></div>`;
+      }
+
+      // Tooltip with names (admin only)
+      if (isAdmin && dayLeaves.length > 0) {
+        const getName = l => data.staff.find(st => st.id === l.staffId)?.name || l.staffId;
+        const amNames = dayLeaves.filter(l => l.session === 'AM' || l.session === 'FULL').map(getName);
+        const pmNames = pmCount !== null ? dayLeaves.filter(l => l.session === 'PM' || l.session === 'FULL').map(getName) : [];
+        let tip = '';
+        if (amNames.length) tip += `<strong>AM:</strong> ${amNames.join(', ')}<br>`;
+        if (pmNames.length) tip += `<strong>PM:</strong> ${pmNames.join(', ')}`;
+        if (tip) content += `<div class="ov-tooltip">${tip}</div>`;
+      }
+    }
+
+    html += `<div class="${cls}">${content}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+// ============================================================
+// ADMIN - STAFF MANAGEMENT
+// ============================================================
+document.getElementById('newWorkType')?.addEventListener('change', function() {
+  document.getElementById('parttimeDaysGroup').style.display = this.value === 'parttime' ? 'block' : 'none';
+});
+
+function showAddStaff() {
+  document.getElementById('addStaffForm').classList.toggle('hidden');
+  document.getElementById('newId').value = '';
+  document.getElementById('newName').value = '';
+  document.getElementById('newRole').value = '';
+  document.getElementById('newEmail').value = '';
+  document.getElementById('newWorkType').value = 'fulltime';
+  document.getElementById('parttimeDaysGroup').style.display = 'none';
+  document.getElementById('newBlackedOut').value = '';
+  document.querySelectorAll('.pt-session').forEach(c => c.checked = false);
+}
+
+function addStaff() {
+  const name = document.getElementById('newName').value.trim();
+  const role = document.getElementById('newRole').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const workType = document.getElementById('newWorkType').value;
+  const customId = document.getElementById('newId').value.trim().toUpperCase().replace(/\s+/g, '');
+
+  let workSessions = [];
+  let workDays = [];
+  if (workType === 'parttime') {
+    document.querySelectorAll('.pt-session:checked').forEach(cb => {
+      const day = Number(cb.dataset.day);
+      const sess = cb.dataset.sess;
+      workSessions.push({ day, sess });
+      if (!workDays.includes(day)) workDays.push(day);
+    });
+  }
+
+  const blackedOut = document.getElementById('newBlackedOut').value
+    .split(',').map(s => s.trim()).filter(s => s.match(/^\d{4}-\d{2}-\d{2}$/));
+
+  if (!name) { alert('Please enter a name'); return; }
+
+  const data = getData();
+
+  // Determine ID: use custom if provided, otherwise auto-generate
+  let id;
+  if (customId) {
+    if (!/^[A-Z0-9\-]+$/.test(customId)) {
+      alert('ID code can only contain letters, numbers, and hyphens (no spaces).'); return;
+    }
+    if (data.staff.some(s => s.id === customId)) {
+      alert(`ID code "${customId}" is already taken. Please choose a different one.`); return;
+    }
+    id = customId;
+  } else {
+    do { id = generateId(); } while (data.staff.some(s => s.id === id));
+  }
+
+  data.staff.push({ id, name, role, email, workType, workDays, workSessions, blackedOut });
+  saveData(data);
+  logAudit('staff_add', `Added staff: ${name} (${id})`);
+  showAddStaff();
+  renderStaffTable();
+  updateAdminFilter();
+}
+
+function renderStaffTable() {
+  const data = getData();
+  const tbody = document.getElementById('staffTableBody');
+  tbody.innerHTML = '';
+  if (!data.staff.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:20px;">No staff added yet. Use the template below to get started.</td></tr>';
+    return;
+  }
+  data.staff.forEach(s => {
+    const hasLeave = data.leaves.some(l => l.staffId === s.id);
+    const dot = hasLeave
+      ? `<span title="Leave submitted" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2ecc71;flex-shrink:0;"></span>`
+      : `<span title="No leave submitted" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e74c3c;flex-shrink:0;"></span>`;
+    const statusLabel = hasLeave
+      ? `<span style="font-size:11px;color:#27ae60;">Submitted</span>`
+      : `<span style="font-size:11px;color:#c0392b;">None</span>`;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${s.name}</strong><br><span style="font-size:11px;color:var(--text-light);">${s.email||''}</span></td>
+      <td>${s.role||'—'}</td>
+      <td><span class="tag-id">${s.id}</span></td>
+      <td><span class="tag ${s.workType==='parttime'?'tag-parttime':'tag-fulltime'}">${s.workType==='parttime'?'Part-time':'Full-time'}</span></td>
+      <td><div style="display:flex;align-items:center;gap:6px;">${dot}${statusLabel}</div></td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-sm btn-secondary" onclick="openEditStaff('${s.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="removeStaff('${s.id}')">Remove</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function removeStaff(id) {
+  if (!confirm('Remove this staff member? Their leave records will remain but be marked as removed staff.')) return;
+  const data = getData();
+  const s = data.staff.find(x => x.id === id);
+  logAudit('staff_remove', `Removed staff: ${s?.name} (${id})`);
+  data.staff = data.staff.filter(x => x.id !== id);
+  saveData(data);
+  renderStaffTable();
+  updateAdminFilter();
+}
+
+function updateAdminFilter() {
+  const data = getData();
+  const sel = document.getElementById('adminFilterStaff');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">All Staff</option>';
+  data.staff.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    if (s.id === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+// ============================================================
+// ADMIN - ALL LEAVES TABLE
+// ============================================================
+function renderAdminTable() {
+  const data = getData();
+  const filterStaff = document.getElementById('adminFilterStaff').value;
+  const filterMonth = document.getElementById('adminFilterMonth').value;
+
+  let leaves = [...data.leaves];
+  if (filterStaff) leaves = leaves.filter(l => l.staffId === filterStaff);
+  if (filterMonth) leaves = leaves.filter(l => l.date.startsWith(filterMonth));
+  leaves.sort((a, b) => a.date.localeCompare(b.date));
+
+  const tbody = document.getElementById('adminLeaveTableBody');
+  tbody.innerHTML = '';
+  if (!leaves.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:20px;">No records found.</td></tr>';
+    return;
+  }
+  leaves.forEach(lv => {
+    const s = data.staff.find(x => x.id === lv.staffId);
+    const lt = LEAVE_TYPES.find(x => x.code === lv.leaveType);
+    const dt = new Date(lv.date + 'T12:00:00').toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+    const sub = new Date(lv.submitted).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const mod = new Date(lv.lastModified).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${s?.name||lv.staffId}</strong></td>
+      <td>${dt}</td>
+      <td><span class="chip ${lv.session==='FULL'?'chip-navy':lv.session==='AM'?'chip-teal':'chip-coral'}">${lv.session}</span></td>
+      <td><span class="cal-badge ${lt?.cls||'badge-al'}">${lv.leaveType}</span></td>
+      <td style="font-size:12px;color:var(--text-light);">${sub}</td>
+      <td style="font-size:12px;color:var(--text-light);">${mod}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="adminDeleteLeave('${lv.id}')">Delete</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function adminDeleteLeave(id) {
+  if (!confirm('Delete this leave record?')) return;
+  const data = getData();
+  const lv = data.leaves.find(l => l.id === id);
+  if (lv) {
+    const s = data.staff.find(x => x.id === lv.staffId);
+    const msg = `Admin deleted ${lv.leaveType} (${lv.session}) on ${lv.date} for ${s?.name||lv.staffId}`;
+    data.leaves = data.leaves.filter(l => l.id !== id);
+    saveData(data);
+    logAudit('admin_delete', msg);
+  }
+  renderAdminTable();
+  renderAuditLog();
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+function renderAuditLog() {
+  const data = getData();
+  const container = document.getElementById('auditLog');
+  document.getElementById('auditCount').textContent = `${data.audit.length} entries`;
+  if (!data.audit.length) {
+    container.innerHTML = '<p style="color:var(--text-light);font-size:13px;text-align:center;padding:16px;">No audit entries yet.</p>';
+    return;
+  }
+  container.innerHTML = data.audit.map(entry => {
+    const ts = new Date(entry.ts).toLocaleString('en-SG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    let typeClass = 'type-add';
+    if (entry.action.includes('amend')) typeClass = 'type-amend';
+    if (entry.action.includes('delete')) typeClass = 'type-delete';
+    return `<div class="audit-entry ${typeClass}">
+      <strong>${entry.action.toUpperCase()}</strong>: ${entry.details}
+      <div class="audit-meta">${ts} · by ${entry.user}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// EXCEL EXPORT
+// ============================================================
+function exportExcel() {
+  const data = getData();
+  const fromM = document.getElementById('exportFrom').value;
+  const toM = document.getElementById('exportTo').value;
+
+  if (fromM > toM) { alert('From month must be before To month.'); return; }
+
+  const wb = XLSX.utils.book_new();
+
+  // ── Helper: get all working dates in a month ──────────────────
+  function getWorkingDatesInMonth(yearMonth) {
+    const [y, m] = yearMonth.split('-').map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const dates = [];
+    for (let d = 1; d <= daysInMonth; d++) {
+      const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow = getDayOfWeek(ds);
+      if (dow === 0) continue;              // skip Sunday
+      if (isPublicHoliday(ds)) continue;   // skip PH
+      dates.push(ds);
+    }
+    return dates;
+  }
+
+  // ── Build list of months in range ────────────────────────────
+  const allMonths = [];
+  let [cy, cm] = fromM.split('-').map(Number);
+  const [ey, em] = toM.split('-').map(Number);
+  while (cy < ey || (cy === ey && cm <= em)) {
+    allMonths.push(`${cy}-${String(cm).padStart(2,'0')}`);
+    cm++;
+    if (cm > 12) { cm = 1; cy++; }
+  }
+
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // ── Sheet per month: staff rows × date-session columns ───────
+  allMonths.forEach(ym => {
+    const [y, m] = ym.split('-').map(Number);
+    const sheetName = `${monthNames[m-1]} ${y}`;
+    const workDates = getWorkingDatesInMonth(ym);
+
+    // Build column definitions including week separators
+    // Each entry is either {date, session} or {separator: true}
+    const dateCols = [];
+    let prevWeekNum = null;
+    workDates.forEach(ds => {
+      const dt = new Date(ds + 'T12:00:00');
+      const dow = getDayOfWeek(ds);
+      const isSat = dow === 6;
+      const isEve = isSpecialEve(ds);
+
+      // Week number (Mon = start of week): use ISO-style grouping
+      // Insert separator before each new Mon-starting week (except the very first)
+      const weekNum = Math.ceil((dt.getDate() + new Date(dt.getFullYear(), dt.getMonth(), 1).getDay()) / 7);
+      if (prevWeekNum !== null && weekNum !== prevWeekNum) {
+        dateCols.push({ separator: true });
+      }
+      prevWeekNum = weekNum;
+
+      dateCols.push({ date: ds, session: 'AM' });
+      if (!isSat && !isEve) dateCols.push({ date: ds, session: 'PM' });
+    });
+
+    // Header row 1: "Name", "Role", then date labels (blank for separator cols)
+    // Header row 2: "", "", then AM/PM (blank for separator cols)
+    const hRow1 = ['Name', 'Role'];
+    const hRow2 = ['', ''];
+    let lastDate = null;
+    dateCols.forEach(col => {
+      if (col.separator) {
+        hRow1.push('');
+        hRow2.push('');
+        return;
+      }
+      const dt = new Date(col.date + 'T12:00:00');
+      const d = dt.getDate();
+      const dow = dayNames[dt.getDay()];
+      const isEve = isSpecialEve(col.date);
+      hRow1.push(col.date !== lastDate ? `${d} ${dow}${isEve ? '*' : ''}` : '');
+      hRow2.push(col.session);
+      lastDate = col.date;
+    });
+    hRow1.push('Total Days');
+    hRow2.push('');
+
+    const rows = [hRow1, hRow2];
+
+    // One row per staff member
+    data.staff.forEach(s => {
+      const staffLeaves = data.leaves.filter(l => l.staffId === s.id && l.date.startsWith(ym));
+      const row = [s.name, s.role || ''];
+      let totalDays = 0;
+
+      dateCols.forEach(col => {
+        if (col.separator) { row.push(''); return; }
+        const match = staffLeaves.find(l => l.date === col.date && (
+          l.session === col.session || l.session === 'FULL'
+        ));
+        if (match) {
+          row.push(match.leaveType);
+          totalDays += 0.5;
+        } else {
+          row.push('');
+        }
+      });
+
+      row.push(totalDays > 0 ? totalDays : '');
+      rows.push(row);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    // Column widths: name=22, role=15, session cols=5, separators=2, totals=10
+    ws['!cols'] = [
+      { wch: 22 }, { wch: 15 },
+      ...dateCols.map(col => ({ wch: col.separator ? 2 : 5 })),
+      { wch: 10 }
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  // ── Sheet: All Leaves (raw log) ───────────────────────────────
+  const allLeaves = data.leaves
+    .filter(l => l.date >= fromM && l.date <= toM + '-31')
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const rawRows = [['Staff ID','Staff Name','Role','Date','Day','Session','Leave Type','Notes','Submitted','Last Modified']];
+  allLeaves.forEach(lv => {
+    const s = data.staff.find(x => x.id === lv.staffId);
+    const dt = new Date(lv.date + 'T12:00:00');
+    rawRows.push([
+      lv.staffId,
+      s?.name || lv.staffId,
+      s?.role || '',
+      lv.date,
+      dayNames[dt.getDay()],
+      lv.session,
+      lv.leaveType,
+      lv.notes || '',
+      lv.submitted ? new Date(lv.submitted).toLocaleString('en-SG') : '',
+      lv.lastModified ? new Date(lv.lastModified).toLocaleString('en-SG') : '',
+    ]);
+  });
+  const wsRaw = XLSX.utils.aoa_to_sheet(rawRows);
+  wsRaw['!cols'] = [12,22,15,12,6,8,14,24,18,18].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsRaw, 'All Leaves (Raw)');
+
+  // ── Sheet: Audit Log ─────────────────────────────────────────
+  const auditRows = [['Action','Details','User','Timestamp']];
+  data.audit.forEach(a => {
+    auditRows.push([a.action, a.details, a.user, new Date(a.ts).toLocaleString('en-SG')]);
+  });
+  const wsAudit = XLSX.utils.aoa_to_sheet(auditRows);
+  wsAudit['!cols'] = [14, 60, 20, 20].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsAudit, 'Audit Log');
+
+  XLSX.writeFile(wb, `PolyLeave_Export_${fromM}_to_${toM}.xlsx`);
+}
+
+function exportStaffDirectory() {
+  const data = getData();
+  const wb = XLSX.utils.book_new();
+
+  const rows = [
+    ['Name', 'Role', 'Email', 'Staff ID Code', 'Work Type', 'Leave Submitted?']
+  ];
+
+  data.staff.forEach(s => {
+    const hasLeave = data.leaves.some(l => l.staffId === s.id);
+    rows.push([
+      s.name,
+      s.role || '',
+      s.email || '',
+      s.id,
+      s.workType === 'parttime' ? 'Part-time' : 'Full-time',
+      hasLeave ? 'Yes' : 'No'
+    ]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [22, 18, 28, 16, 12, 16].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, ws, 'Staff Directory');
+  XLSX.writeFile(wb, `BBK_Staff_Directory_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ============================================================
+// BACKUP & RESTORE
+// ============================================================
+function backupData() {
+  const data = getData();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `BBK_Backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  logAudit('backup', 'Admin downloaded a full data backup');
+}
+
+function restoreData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('restoreStatus');
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data.staff) || !Array.isArray(data.leaves)) {
+        throw new Error('Invalid backup file — missing staff or leaves data.');
+      }
+      if (!data.audit) data.audit = [];
+
+      const staffCount = data.staff.length;
+      const leaveCount = data.leaves.length;
+
+      // Show inline confirm instead of browser confirm()
+      statusEl.style.display = 'block';
+      statusEl.innerHTML = `
+        <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:12px;font-size:13px;">
+          <p style="font-weight:600;margin-bottom:8px;color:#92400e;">⚠️ Ready to restore backup</p>
+          <p style="color:#78350f;margin-bottom:10px;">This will replace ALL current data with:<br>
+            &bull; <strong>${staffCount}</strong> staff member${staffCount !== 1 ? 's' : ''}<br>
+            &bull; <strong>${leaveCount}</strong> leave record${leaveCount !== 1 ? 's' : ''}
+          </p>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-danger" onclick="confirmRestore()">Yes, restore now</button>
+            <button class="btn btn-sm btn-secondary" onclick="cancelRestore()">Cancel</button>
+          </div>
+        </div>`;
+
+      // Stash parsed data for confirm step
+      window._pendingRestoreData = data;
+
+    } catch (err) {
+      statusEl.style.display = 'block';
+      statusEl.style.color = 'var(--coral)';
+      statusEl.textContent = '❌ Failed to read file: ' + err.message;
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function confirmRestore() {
+  const data = window._pendingRestoreData;
+  if (!data) return;
+  const statusEl = document.getElementById('restoreStatus');
+  saveData(data);
+  logAudit('restore', `Admin restored backup: ${data.staff.length} staff, ${data.leaves.length} leaves`);
+  window._pendingRestoreData = null;
+  statusEl.innerHTML = `<div style="color:#16a34a;font-weight:600;font-size:13px;">✅ Restored successfully — ${data.staff.length} staff, ${data.leaves.length} leave records loaded.</div>`;
+  renderStaffTable();
+  renderAdminTable();
+  renderAuditLog();
+  updateAdminFilter();
+}
+
+function cancelRestore() {
+  window._pendingRestoreData = null;
+  const statusEl = document.getElementById('restoreStatus');
+  statusEl.style.display = 'none';
+  statusEl.innerHTML = '';
+}
+function seedDemoData() {
+  const existing = getData();
+  if (existing.staff.length > 0) return; // Already has data
+
+  // Sample staff template
+  const sampleStaff = [
+    { name: 'Dr Tan Wei Ming', role: 'Family Physician', email: 'wtan@clinic.sg', workType: 'fulltime' },
+    { name: 'Dr Lim Hui Fen', role: 'Family Physician', email: 'hflim@clinic.sg', workType: 'fulltime' },
+    { name: 'Nur Aisha Bte Yusof', role: 'Staff Nurse', email: 'naisha@clinic.sg', workType: 'fulltime' },
+    { name: 'Chen Mei Ling', role: 'Staff Nurse', email: 'cmling@clinic.sg', workType: 'parttime', workDays: [1,2,3] },
+    { name: 'Ravi Kumar', role: 'Medical Social Worker', email: 'rkumar@clinic.sg', workType: 'fulltime' },
+    { name: 'Sarah Tan', role: 'Healthcare Assistant', email: 'stan@clinic.sg', workType: 'fulltime' },
+    { name: 'Wong Kai Xin', role: 'Admin Executive', email: 'kwong@clinic.sg', workType: 'parttime', workDays: [1,2,3,4] },
+  ];
+
+  const data = getData();
+  sampleStaff.forEach(s => {
+    let id;
+    do { id = generateId(); } while (data.staff.some(x => x.id === id));
+    data.staff.push({ id, blackedOut: [], workDays: [], ...s });
+  });
+  saveData(data);
+}
+
+// Run seed on first load
+seedDemoData();
+
+// ============================================================
+// EDIT STAFF
+// ============================================================
+function openEditStaff(id) {
+  const data = getData();
+  const s = data.staff.find(x => x.id === id);
+  if (!s) return;
+
+  document.getElementById('editStaffId').value = id;
+  document.getElementById('editStaffIdLabel').textContent = `Currently: ${id}`;
+  document.getElementById('editStaffIdNew').value = id;
+  document.getElementById('editName').value = s.name || '';
+  document.getElementById('editRole').value = s.role || '';
+  document.getElementById('editEmail').value = s.email || '';
+  document.getElementById('editWorkType').value = s.workType || 'fulltime';
+  document.getElementById('editBlackedOut').value = (s.blackedOut || []).join(', ');
+
+  const showPT = s.workType === 'parttime';
+  document.getElementById('editParttimeGroup').style.display = showPT ? 'block' : 'none';
+
+  document.querySelectorAll('.edit-pt-session').forEach(cb => {
+    cb.checked = (s.workSessions || []).some(ws => ws.day === Number(cb.dataset.day) && ws.sess === cb.dataset.sess);
+  });
+
+  document.getElementById('editStaffModal').classList.add('open');
+}
+
+function closeEditStaff() {
+  document.getElementById('editStaffModal').classList.remove('open');
+}
+
+function saveEditStaff() {
+  const oldId = document.getElementById('editStaffId').value;
+  const newId = document.getElementById('editStaffIdNew').value.trim().toUpperCase().replace(/\s+/g, '');
+  const name = document.getElementById('editName').value.trim();
+  const role = document.getElementById('editRole').value.trim();
+  const email = document.getElementById('editEmail').value.trim();
+  const workType = document.getElementById('editWorkType').value;
+  const blackedOut = document.getElementById('editBlackedOut').value
+    .split(',').map(s => s.trim()).filter(s => s.match(/^\d{4}-\d{2}-\d{2}$/));
+
+  let workSessions = [];
+  let workDays = [];
+  if (workType === 'parttime') {
+    document.querySelectorAll('.edit-pt-session:checked').forEach(cb => {
+      const day = Number(cb.dataset.day);
+      const sess = cb.dataset.sess;
+      workSessions.push({ day, sess });
+      if (!workDays.includes(day)) workDays.push(day);
+    });
+  }
+
+  if (!name) { alert('Name is required'); return; }
+  if (!newId) { alert('ID code cannot be empty'); return; }
+  if (!/^[A-Z0-9\-]+$/.test(newId)) {
+    alert('ID code can only contain letters, numbers, and hyphens.'); return;
+  }
+
+  const data = getData();
+  const idx = data.staff.findIndex(x => x.id === oldId);
+  if (idx === -1) return;
+
+  // Check new ID isn't already taken by a different staff member
+  if (newId !== oldId && data.staff.some(s => s.id === newId)) {
+    alert(`ID code "${newId}" is already taken by another staff member.`); return;
+  }
+
+  const old = data.staff[idx];
+  data.staff[idx] = { ...old, id: newId, name, role, email, workType, workDays, workSessions, blackedOut };
+
+  // If ID changed, update all leave records to use new ID
+  if (newId !== oldId) {
+    data.leaves.forEach(l => { if (l.staffId === oldId) l.staffId = newId; });
+    logAudit('staff_edit', `Edited staff: ${name} — ID changed from ${oldId} to ${newId}`);
+  } else {
+    logAudit('staff_edit', `Edited staff: ${name} (${newId})`);
+  }
+
+  saveData(data);
+  closeEditStaff();
+  renderStaffTable();
+  updateAdminFilter();
+}
+
+document.getElementById('editStaffModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditStaff();
+});
+
+// ============================================================
+// DATE RANGE LEAVE
+// ============================================================
+let selectedRangeSession = null;
+let selectedRangeLeaveType = null;
+
+function openRangeModal() {
+  selectedRangeSession = null;
+  selectedRangeLeaveType = null;
+  document.getElementById('rangeStart').value = '';
+  document.getElementById('rangeEnd').value = '';
+  document.getElementById('rangeNotes').value = '';
+  document.getElementById('rangeDatePreview').style.display = 'none';
+  document.querySelectorAll('.range-sess-btn').forEach(b => b.classList.remove('active'));
+
+  // Build leave type grid
+  const grid = document.getElementById('rangeLeaveTypeGrid');
+  grid.innerHTML = '';
+  LEAVE_TYPES.forEach(lt => {
+    const btn = document.createElement('div');
+    btn.className = 'leave-type-btn';
+    btn.textContent = lt.label;
+    btn.onclick = () => {
+      document.querySelectorAll('#rangeLeaveTypeGrid .leave-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRangeLeaveType = lt.code;
+    };
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('rangeLeaveModal').classList.add('open');
+}
+
+function closeRangeModal() {
+  document.getElementById('rangeLeaveModal').classList.remove('open');
+}
+
+function selectRangeSession(sess) {
+  selectedRangeSession = sess;
+  document.querySelectorAll('.range-sess-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.range-sess-btn[data-sess="${sess}"]`)?.classList.add('active');
+}
+
+function getRangeDates() {
+  const start = document.getElementById('rangeStart').value;
+  const end = document.getElementById('rangeEnd').value;
+  if (!start || !end || start > end) return [];
+
+  const dates = [];
+  const cur = new Date(start + 'T12:00:00');
+  const endDate = new Date(end + 'T12:00:00');
+
+  while (cur <= endDate) {
+    const dateStr = cur.toISOString().slice(0, 10);
+    if (isWorkday(dateStr, currentUser) && !isBlocked(dateStr, currentUser)) {
+      // Check session availability
+      const avail = getWorkSessions(dateStr, currentUser);
+      const canAdd = selectedRangeSession === 'FULL'
+        ? avail.includes('AM') && avail.includes('PM')
+        : selectedRangeSession ? avail.includes(selectedRangeSession) : true;
+      if (canAdd) dates.push(dateStr);
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+  return dates;
+}
+
+function previewRange() {
+  const dates = getRangeDates();
+  const preview = document.getElementById('rangeDatePreview');
+  if (!dates.length) {
+    preview.style.display = 'block';
+    document.getElementById('rangeDayCount').textContent = 'No valid working days found in this range';
+    document.getElementById('rangeDayList').textContent = 'Check your date range and session selection.';
+    return;
+  }
+  const count = selectedRangeSession === 'FULL' ? dates.length : dates.length * 0.5;
+  const formatted = dates.map(d => {
+    const dt = new Date(d + 'T12:00:00');
+    return dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', weekday: 'short' });
+  });
+  preview.style.display = 'block';
+  document.getElementById('rangeDayCount').textContent = `${dates.length} days (${count} leave days)`;
+  document.getElementById('rangeDayList').textContent = formatted.join(' · ');
+}
+
+function saveRangeLeave() {
+  if (!selectedRangeSession) { alert('Please select a session'); return; }
+  if (!selectedRangeLeaveType) { alert('Please select a leave type'); return; }
+
+  const start = document.getElementById('rangeStart').value;
+  const end = document.getElementById('rangeEnd').value;
+  if (!start || !end) { alert('Please select start and end dates'); return; }
+  if (start > end) { alert('Start date must be before end date'); return; }
+
+  const dates = getRangeDates();
+  if (!dates.length) { alert('No valid working days found in this range.'); return; }
+
+  const data = getData();
+  const now = new Date().toISOString();
+  const notes = document.getElementById('rangeNotes').value.trim();
+  let added = 0;
+
+  dates.forEach(dateStr => {
+    // Skip if leave already exists for this date+session
+    const existing = data.leaves.find(l =>
+      l.staffId === currentUser.id && l.date === dateStr &&
+      (l.session === selectedRangeSession || l.session === 'FULL' || selectedRangeSession === 'FULL')
+    );
+    if (existing) return;
+
+    data.leaves.push({
+      id: 'LV-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      staffId: currentUser.id,
+      date: dateStr,
+      session: selectedRangeSession,
+      leaveType: selectedRangeLeaveType,
+      notes,
+      submitted: now,
+      lastModified: now
+    });
+    added++;
+  });
+
+  saveData(data);
+  logAudit('add_range', `${currentUser.name} applied ${selectedRangeLeaveType} (${selectedRangeSession}) from ${start} to ${end} — ${added} day(s) added`);
+  closeRangeModal();
+  renderMyCalendar();
+  renderMyTable();
+  updateStats();
+  alert(`✅ Leave applied for ${added} day(s) successfully!`);
+}
+
+// Close modal on overlay click
+document.getElementById('leaveModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Initialize admin filter
+function initAdminFilter() {
+  updateAdminFilter();
+}
+</script>
+</body>
+</html>
